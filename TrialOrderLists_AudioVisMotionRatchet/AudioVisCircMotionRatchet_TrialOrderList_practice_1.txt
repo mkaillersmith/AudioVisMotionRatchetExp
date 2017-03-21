@@ -1,0 +1,4 @@
+clockwise 3
+clockwise 1
+clockwise 2
+clockwise 1
