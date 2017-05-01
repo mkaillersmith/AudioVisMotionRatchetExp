@@ -1,0 +1,4 @@
+counterClockwise 5
+counterClockwise 1
+counterClockwise 2
+counterClockwise 3

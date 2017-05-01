@@ -1,0 +1,10 @@
+clockwise 5
+clockwise 1
+clockwise 2
+clockwise 3
+clockwise 4
+clockwise 5
+clockwise 2
+clockwise 3
+
+
