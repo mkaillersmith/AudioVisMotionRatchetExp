@@ -24,8 +24,8 @@ from psychopy import sound
 #screenSize = (800, 600)
 
 #Experiment Screen Size 
-screenSize = (1600, 900)
-win = visual.Window(screenSize, monitor='testMonitor', screen=2, fullscr=True)
+screenSize = (1920, 1080)
+win = visual.Window(screenSize, monitor='testMonitor', screen=1,color=0, fullscr=False)
 #win.setRecordFrameIntervals(True)
 allowedKeys = ['space']
 #logging.console.setLevel(logging.WARNING)
@@ -47,10 +47,13 @@ out_phase_snd.setVolume(1.0)
 ## Magic Numbers ##
 
 # Timing
-refreshRate = 60 # mkae sure that testing monitor is 60fps 
+refreshRate = 60 # mkae sure that 
+
+
+#monitor is 60fps 
 adaptorTime = 10 # how many seconds should adaptor stimulus play (10s)
 ambiguousTime = 20 # how many seconds should ambiguous stimulus play (limit response to 20s)
-framesPerStim = 12 # adaptor -- frames per location before movement (5Hz=100ms)
+framesPerStim = 12 # adaptor -- frames per location before movement (5Hz=200ms)
 ambiguousFramesPerStim = 12 # ambiguous -- frames per location before movement (5Hz=200ms)
 blankTime = 1 # seconds for blank screen to appear
 isi = 9 # interstimulus interval (150 msec)
@@ -128,6 +131,13 @@ practiceInstructions_4 = """Let's try some trials!
 
 Press any key to begin
 """
+
+practiceInstructions_5 = """You will now be presented with trials that you will experience in the task.
+
+Press any key to begin
+"""
+
+
 
 #instructions = """You will be presented with circles rotating either clockwise or counter-clockwise.
 
@@ -214,6 +224,7 @@ def showAdaptor(direction, snd): # Function Creates Adaptor Stimuli -- Takes 2 p
     event.clearEvents() # clears all eventts from buffer
 
 def showPracticeAdaptor(direction, pracAdaptorTime): # Function Creates Adaptor Stimuli -- Takes 2 param (direction = ('clockwise'/'counterClockwise'), snd=('in'/'out'/'no'))
+
     if direction == 'clockwise':
         rotateDirection = 'counterClockwise'
     elif direction == 'counterClockwise':
@@ -349,9 +360,16 @@ def showBreak(counter):
         keys = event.getKeys()
         if len(keys)> 0:
             break
+            
+def getCondition(subj):
+    if int(subj[2]) in [1, 4, 5, 7, 9]:
+        condition = 1
+    else:
+        condition = 2
+    return condition
 
 def getTrialOrder(subj): # Retrieves a trial order list based upon the participants subject number
-    trialfile = open("C:\Users\Testing_J\Desktop\AudioVisMotionRatchetExp\\TrialOrderLists_AudioVisMotionRatchet\\AudioVisCircMotionRatchet_TrialOrderList_practice.txt", 'r')
+    trialfile = open("C:\Users\lab user\Desktop\AudioVisMotionRatchetExp\\TrialOrderLists_AudioVisMotionRatchet\\AudioVisCircMotionRatchet_TrialOrderList_practice_"+str(condition)+".txt", 'r')
     trialList = []
     print trialfile
     for line in trialfile:
@@ -388,19 +406,25 @@ subj = str(expInfo['Participant'])
 #con = eval(expInfo['Condition'])
 #block = eval(expInfo['Block'])
 
-file_log = "C:\\Testing_J\\AudioVisCircMotionRatchet-master\\logging.txt"
+condition = getCondition(subj)
+file_log = "C:\\lab user\\AudioVisCircMotionRatchet-master\\logging.txt"
 
  # Import Trial Order
-trialOrder, inputTrialFile, expLength = getTrialOrder(subj)
+trialOrder, inputTrialFile, expLength = getTrialOrder(condition)
+if condition == 1:
+    adapt = 'clockwise'
+else:
+    adapt = 'counterClockwise'
+
 
 # Show Instructions
 
 showInstructions(practiceInstructions_1)
-showAdaptor('clockwise', '1')
+showAdaptor(adapt, '1')
 showInstructions(practiceInstructions_2)
 showInstructions(practiceInstructions_3)
 showFixCircle()
-showPracticeAdaptor('counterClockwise', 3)
+showPracticeAdaptor(adapt, 3)
 showAmbiguous()
 showInstructions(practiceInstructions_4)
 
@@ -418,5 +442,15 @@ for trial in trialOrder:
     showPracticeAdaptor(trial[0], random.randrange(3,6))
     showAmbiguous()
     showITI()
+showInstructions(practiceInstructions_5)
+for trial in trialOrder:
+    trial_num +=1
+    print trial
+    trialClock = core.Clock()
+    startTrial = trialClock.getTime()
+    showAdaptor(trial[0], trial[1])
+    showFixCircle()
+    showAmbiguous()
+    showITI()
 
-    
+core.quit()
